@@ -52,11 +52,7 @@ namespace ThirdPersonCamera
             thirdPersonCamera.transform.SetParent(null, true);
             cameraScript = thirdPersonCamera.AddComponent<ThirdPersonCameraScript>();
 
-            var target = car.transform.position;
-            target += car.transform.up * 0.75f;
-            target -= car.transform.forward * 0.25f;
-
-            cameraScript.target = target;
+            cameraScript.target = car;
             thirdPersonCamera.AddComponent<FlareLayer>();
             thirdPersonCamera.AddComponent<Camera>();
             thirdPersonCamera.AddComponent<AudioListener>();
@@ -98,7 +94,8 @@ namespace ThirdPersonCamera
 
     public class ThirdPersonCameraScript : MonoBehaviour
     {
-        public Vector3 target;
+        public Transform target;
+        private Vector3 targetPosition;
         private float distance = 6.5f;
         private float smoothSpeed = 1f;
         private float yMinLimit = -40f;
@@ -142,6 +139,10 @@ namespace ThirdPersonCamera
             if (paused)
                 return;
 
+            targetPosition = target.position;
+            targetPosition += target.transform.up * 0.75f;
+            targetPosition -= target.transform.forward * 0.25f;
+
             if (Input.mouseScrollDelta.y != 0)
             {
                 currentDistance -= Input.mouseScrollDelta.y;
@@ -160,12 +161,12 @@ namespace ThirdPersonCamera
             if (paused)
                 return;
 
-            Vector3 desiredPosition = target - (transform.forward * distance);
+            Vector3 desiredPosition = targetPosition - (transform.forward * distance);
 
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
 
             RaycastHit hit;
-            if (Physics.Raycast(target, -transform.forward, out hit, distance))
+            if (Physics.Raycast(targetPosition, -transform.forward, out hit, distance))
             {
                 distance = hit.distance - 0.5f;
             }
