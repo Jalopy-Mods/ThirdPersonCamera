@@ -32,6 +32,9 @@ namespace ThirdPersonCamera
         private AudioListener listener;
         private ThirdPersonCameraScript cameraScript;
 
+        private GameObject bottomEyeLid;
+        private GameObject topEyeLid;
+
         public override void SettingsDeclaration()
         {
             base.SettingsDeclaration();
@@ -60,6 +63,9 @@ namespace ThirdPersonCamera
             mainCamera = Camera.main.gameObject;
             listener = mainCamera.GetComponent<AudioListener>();
             mouseLook = mainCamera.GetComponent<MouseLook>();
+
+            bottomEyeLid = GameObject.Find("BottomEyeLid");
+            topEyeLid = GameObject.Find("TopEyeLid");
         }
 
         public override void Update()
@@ -87,8 +93,8 @@ namespace ThirdPersonCamera
             thirdPersonCamera.SetActive(toggled);
             listener.enabled = !toggled;
             mainCamera.GetComponent<Camera>().enabled = !toggled;
-            GameObject.Find("BottomEyeLid").SetActive(!toggled);
-            GameObject.Find("TopEyeLid").SetActive(!toggled);
+            bottomEyeLid.SetActive(!toggled);
+            topEyeLid.SetActive(!toggled);
         }
     }
 
